@@ -779,8 +779,6 @@ class Discogs::Wrapper
         @access_token.send(method, formatted, headers)
       end
     else
-      Typhoeus.get('https://api.discogs.com/users/BAD-Condition-RECS/inventory')
-
       request = Typhoeus::Request.new(uri,
         headers: headers,
         method: method,
