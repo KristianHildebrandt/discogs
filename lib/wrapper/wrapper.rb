@@ -7,6 +7,7 @@ require 'stringio'
 require 'uri'
 require 'cgi'
 require 'zlib'
+require 'typhoeus'
 
 require File.dirname(__FILE__) + "/authentication"
 
@@ -778,17 +779,16 @@ class Discogs::Wrapper
         @access_token.send(method, formatted, headers)
       end
     else
-      # All non-authenticated endpoints are GET.
-      request = Net::HTTP::Get.new(formatted)
+      Typhoeus.get('https://api.discogs.com/users/BAD-Condition-RECS/inventory')
 
-      headers.each do |h, v|
-        request.add_field(h, v)
-      end
+      request = Typhoeus::Request.new(uri,
+        headers: headers,
+        method: method,
+        params: params,
+        body: body
+      )
 
-      Net::HTTP.start(uri.host, uri.port,
-        :use_ssl => uri.scheme == 'https') do |http|
-        http.request(request)
-      end
+      request.run
     end
   end
 
